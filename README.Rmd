@@ -64,9 +64,25 @@ plot(desire_filtered$geometry, add = TRUE, lwd = 0.2)
 plot(desire_rail$geometry, add = TRUE, col = "blue")
 ```
 
+# Rail station data
+
+```{r, eval=FALSE}
+u_naptan = "http://naptan.app.dft.gov.uk/DataRequest/Naptan.ashx?format=csv"
+f_naptan = basename(u_naptan)
+download.file(url = u_naptan, destfile = f_naptan)
+unzip(f_naptan)
+list.files()
+rail_naptan = readr::read_csv("RailReferences.csv")
+rail_sf = sf::st_as_sf(rail_naptan, coords = c("Easting", "Northing"), crs = 27700) %>% 
+  sf::st_transform(4326)
+plot(region$geometry)
+
+```
 
 
 
 # Transit routing
+
+
 
 # Discussion
