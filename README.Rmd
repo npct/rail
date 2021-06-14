@@ -32,8 +32,11 @@ A random sample of OD pairs from the national dataset is shown below.
 
 ```{r}
 od_england_wales = pct::get_od()
-centroids_england_wales = pct::get_centroids_ew()
-knitr::kable(od_england_wales[sample(nrow(od_england_wales), size = 3), ])
+centroids_england_wales = pct::get_centroids_ew() %>% 
+  sf::st_transform(4326)
+od_england_wales %>% 
+  sample_n(3) %>% 
+  knitr::kable()
 ```
 
 The case study region of West Yorkshire is used to subset the data.
@@ -43,6 +46,7 @@ OD pairs with more than 50 people by any mode and with more than 50 people trave
 west_yorkshire = pct::pct_regions %>% 
   filter(region_name == "west-yorkshire")
 plot(west_yorkshire$geometry)
+plot(centroids_england_wales$geometry, add = TRUE)
 ```
 
 
