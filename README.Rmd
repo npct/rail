@@ -57,7 +57,7 @@ od_filtered = od_region %>%
 desire_filtered = od::od_to_sf(x = od_filtered, z = centroids_england_wales)
 desire_rail = desire_filtered %>% 
   filter(train >= param_min_flow_rail)
-plot(west_yorkshire$geometry)
+plot(region$geometry)
 plot(centroids_england_wales$geometry, add = TRUE)
 plot(centroids_region$geometry, pch = 2, add = TRUE)
 plot(desire_filtered$geometry, add = TRUE, lwd = 0.2)
