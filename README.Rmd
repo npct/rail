@@ -10,7 +10,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   # eval = FALSE,
-  echo = FALSE
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
 )
 library(tidyverse)
 
@@ -43,8 +45,8 @@ od_england_wales %>%
   knitr::kable()
 ```
 
-The case study region of West Yorkshire is used to subset the data.
-OD pairs with more than 50 people by any mode and with more than 50 people travelling by rail are shown below.
+The case study region of West Yorkshire is used to subset the dataset of `r nrow(od_england_wales)` OD pairs.
+OD pairs converted to desire lines with more than `r param_min_flow_rail` people by any mode (black) and by rail (red) are shown below.
 
 ```{r}
 region = pct::pct_regions %>% 
