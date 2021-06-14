@@ -40,7 +40,9 @@ The case study region of West Yorkshire is used to subset the data.
 OD pairs with more than 50 people by any mode and with more than 50 people travelling by rail are shown below.
 
 ```{r}
-
+west_yorkshire = pct::pct_regions %>% 
+  filter(region_name == "west-yorkshire")
+plot(west_yorkshire$geometry)
 ```
 
 
