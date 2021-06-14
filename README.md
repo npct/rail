@@ -14,6 +14,11 @@ instance.
 
 # OD data
 
+The input data consists of origin-destination pairs. These can be
+obtained from a range of sources. We will use open OD data from the 2011
+UK Census to demonstrate the methods. A random sample of OD pairs from
+the national dataset is shown below.
+
 # Transit routing
 
 # Discussion
