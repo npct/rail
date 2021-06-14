@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of rail is to ...
+The goal of this repo is to explore methods for calculating cycling potential to public transport nodes, rail stations in the first instance.
 
 What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
