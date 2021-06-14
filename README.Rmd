@@ -16,7 +16,7 @@ library(tidyverse)
 
 param_region = "west-yorkshire"
 param_min_flow = 100
-param_min_flow_rail = 30
+param_min_flow_rail = 10
 ```
 
 # Estimating cycling potential to rail stations
@@ -76,7 +76,13 @@ rail_naptan = readr::read_csv("RailReferences.csv")
 rail_sf = sf::st_as_sf(rail_naptan, coords = c("Easting", "Northing"), crs = 27700) %>% 
   sf::st_transform(4326)
 plot(region$geometry)
+sf::write_sf(rail_sf, "rail_stations.geojson")
+```
 
+```{r}
+rail_stations = sf::read_sf("rail_stations.geojson")
+plot(desire_rail$geometry, col = "red")
+plot(rail_stations$geometry, add = TRUE)
 ```
 
 
