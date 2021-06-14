@@ -19,6 +19,10 @@ obtained from a range of sources. We will use open OD data from the 2011
 UK Census to demonstrate the methods. A random sample of OD pairs from
 the national dataset is shown below.
 
+The case study region of West Yorkshire is used to subset the data. OD
+pairs with more than 50 people by any mode and with more than 50 people
+travelling by rail are shown below.
+
 # Transit routing
 
 # Discussion
