@@ -60,11 +60,11 @@ the national dataset is shown below.
     #>   LATITUDE = col_double()
     #> )
 
-| geo_code1 | geo_code2 | all | from_home | light_rail | train | bus | taxi | motorbike | car_driver | car_passenger | bicycle | foot | other | geo_name1    | geo_name2          | la_1     | la_2           |
-|:----------|:----------|----:|----------:|-----------:|------:|----:|-----:|----------:|-----------:|--------------:|--------:|-----:|------:|:-------------|:-------------------|:---------|:---------------|
-| E02005335 | E02006034 |   1 |         0 |          0 |     0 |   0 |    0 |         0 |          1 |             0 |       0 |    0 |     0 | Blaby 003    | Shropshire 020     | Blaby    | Shropshire     |
-| W02000223 | W02000347 |   1 |         0 |          0 |     0 |   0 |    0 |         0 |          1 |             0 |       0 |    0 |     0 | Bridgend 006 | Newport 001        | Bridgend | Newport        |
-| E02003324 | E02000001 |  60 |         0 |          0 |    22 |  17 |    0 |         2 |         17 |             2 |       0 |    0 |     0 | Medway 011   | City of London 001 | Medway   | City of London |
+| geo_code1 | geo_code2 | all | from_home | light_rail | train | bus | taxi | motorbike | car_driver | car_passenger | bicycle | foot | other | geo_name1                     | geo_name2     | la_1                      | la_2      |
+|:----------|:----------|----:|----------:|-----------:|------:|----:|-----:|----------:|-----------:|--------------:|--------:|-----:|------:|:------------------------------|:--------------|:--------------------------|:----------|
+| E02002640 | E02001037 |   1 |         0 |          0 |     0 |   1 |    0 |         0 |          0 |             0 |       0 |    0 |     0 | Blackpool 008                 | Bury 019      | Blackpool                 | Bury      |
+| E02000756 | E02000404 |   2 |         0 |          0 |     0 |   0 |    0 |         0 |          2 |             0 |       0 |    0 |     0 | Redbridge 006                 | Haringey 008  | Redbridge                 | Haringey  |
+| E02003877 | E02005647 |   1 |         0 |          0 |     0 |   0 |    0 |         0 |          1 |             0 |       0 |    0 |     0 | Cheshire West and Chester 015 | Kettering 009 | Cheshire West and Chester | Kettering |
 
 The case study region of West Yorkshire is used to subset the data. OD
 pairs with more than 50 people by any mode and with more than 50 people
@@ -75,6 +75,8 @@ travelling by rail are shown below.
     #>  points not in od data removed.
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+# Rail station data
 
 # Transit routing
 
