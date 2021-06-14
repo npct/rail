@@ -60,11 +60,11 @@ the national dataset is shown below.
     #>   LATITUDE = col_double()
     #> )
 
-| geo_code1 | geo_code2 | all | from_home | light_rail | train | bus | taxi | motorbike | car_driver | car_passenger | bicycle | foot | other | geo_name1     | geo_name2     | la_1      | la_2      |
-|:----------|:----------|----:|----------:|-----------:|------:|----:|-----:|----------:|-----------:|--------------:|--------:|-----:|------:|:--------------|:--------------|:----------|:----------|
-| E02000431 | E02000839 |   1 |         0 |          0 |     0 |   0 |    0 |         0 |          1 |             0 |       0 |    0 |     0 | Haringey 035  | Southwark 033 | Haringey  | Southwark |
-| E02000337 | E02000826 |   2 |         0 |          0 |     0 |   0 |    0 |         0 |          2 |             0 |       0 |    0 |     0 | Greenwich 025 | Southwark 020 | Greenwich | Southwark |
-| E02000814 | E02000189 |   5 |         0 |          2 |     0 |   2 |    0 |         0 |          0 |             0 |       1 |    0 |     0 | Southwark 008 | Camden 024    | Southwark | Camden    |
+| geo_code1 | geo_code2 | all | from_home | light_rail | train | bus | taxi | motorbike | car_driver | car_passenger | bicycle | foot | other | geo_name1                | geo_name2     | la_1                 | la_2      |
+|:----------|:----------|----:|----------:|-----------:|------:|----:|-----:|----------:|-----------:|--------------:|--------:|-----:|------:|:-------------------------|:--------------|:---------------------|:----------|
+| E02001057 | E02001125 |   8 |         0 |          0 |     0 |   3 |    0 |         0 |          5 |             0 |       0 |    0 |     0 | Manchester 013           | Oldham 028    | Manchester           | Oldham    |
+| E02002533 | E02005866 |   1 |         0 |          0 |     0 |   0 |    0 |         0 |          1 |             0 |       0 |    0 |     0 | Redcar and Cleveland 019 | Gedling 002   | Redcar and Cleveland | Gedling   |
+| E02001145 | E02002459 |   1 |         0 |          0 |     0 |   0 |    0 |         0 |          1 |             0 |       0 |    0 |     0 | Rochdale 014             | Wakefield 022 | Rochdale             | Wakefield |
 
 The case study region of West Yorkshire is used to subset the data. OD
 pairs with more than 50 people by any mode and with more than 50 people
@@ -78,7 +78,7 @@ travelling by rail are shown below.
 
 # Rail station data
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/railsample-1.png)<!-- -->
 
 # Transit routing
 
