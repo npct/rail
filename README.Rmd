@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
   eval = FALSE,
   echo = FALSE
 )
+library(tidyverse)
 ```
 
 # Estimating cycling potential to rail stations
@@ -35,6 +36,12 @@ centroids_england_wales = pct::get_centroids_ew()
 knitr::kable(od_england_wales[sample(nrow(od_england_wales), size = 3), ])
 ```
 
+The case study region of West Yorkshire is used to subset the data.
+OD pairs with more than 50 people by any mode and with more than 50 people travelling by rail are shown below.
+
+```{r}
+
+```
 
 
 
