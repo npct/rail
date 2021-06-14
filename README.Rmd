@@ -55,6 +55,7 @@ od_region = od_england_wales %>%
 od_filtered = od_region %>% 
   filter(all >= param_min_flow_rail)
 desire_filtered = od::od_to_sf(x = od_filtered, z = centroids_england_wales)
+desire_filtered$length_m = sf::st_length(desire_filtered) %>% as.numeric()
 desire_rail = desire_filtered %>% 
   filter(train >= param_min_flow_rail)
 plot(region$geometry)
@@ -79,9 +80,22 @@ plot(region$geometry)
 sf::write_sf(rail_sf, "rail_stations.geojson")
 ```
 
-```{r}
+```{r railsample}
+# plot sample of trips to demo data on
+set.seed(7)
+desire_sample = desire_rail %>% 
+  filter(length_m > 10000) %>% 
+  sample_n(3)
+desire_sample2 = desire_rail %>% 
+  filter(length_m > 10000) %>% 
+  filter(!geo_code2 %in% centroids_region$msoa11cd) %>% 
+  sample_n(2)
+
+desire_sample = rbind(desire_sample, desire_sample2)
 rail_stations = sf::read_sf("rail_stations.geojson")
-plot(desire_rail$geometry, col = "red")
+plot(desire_rail$geometry, col = "grey")
+plot(desire_sample$geometry, col = "blue", add = TRUE, lwd = 2)
+plot(region$geometry, add = TRUE)
 plot(rail_stations$geometry, add = TRUE)
 ```
 
