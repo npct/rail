@@ -24,9 +24,15 @@ The goal of this repo is to explore methods for calculating cycling potential to
 
 # OD data
 
+The input data consists of origin-destination pairs.
+These can be obtained from a range of sources.
+We will use open OD data from the 2011 UK Census to demonstrate the methods.
+A random sample of OD pairs from the national dataset is shown below.
+
 ```{r}
 od_england_wales = pct::get_od()
 centroids_england_wales = pct::get_centroids_ew()
+knitr::kable(od_england_wales[sample(nrow(od_england_wales), size = 3), ])
 ```
 
 
