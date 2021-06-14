@@ -13,6 +13,10 @@ knitr::opts_chunk$set(
   echo = FALSE
 )
 library(tidyverse)
+
+param_region = "west-yorkshire"
+param_min_flow = 100
+param_min_flow_rail = 30
 ```
 
 # Estimating cycling potential to rail stations
@@ -43,10 +47,21 @@ The case study region of West Yorkshire is used to subset the data.
 OD pairs with more than 50 people by any mode and with more than 50 people travelling by rail are shown below.
 
 ```{r}
-west_yorkshire = pct::pct_regions %>% 
-  filter(region_name == "west-yorkshire")
+region = pct::pct_regions %>% 
+  filter(region_name == param_region)
+centroids_region = centroids_england_wales[region, ]
+od_region = od_england_wales %>% 
+  filter(geo_code1 %in% centroids_region$msoa11cd)
+od_filtered = od_region %>% 
+  filter(all >= param_min_flow_rail)
+desire_filtered = od::od_to_sf(x = od_filtered, z = centroids_england_wales)
+desire_rail = desire_filtered %>% 
+  filter(train >= param_min_flow_rail)
 plot(west_yorkshire$geometry)
 plot(centroids_england_wales$geometry, add = TRUE)
+plot(centroids_region$geometry, pch = 2, add = TRUE)
+plot(desire_filtered$geometry, add = TRUE, lwd = 0.2)
+plot(desire_rail$geometry, add = TRUE, col = "blue")
 ```
 
 
