@@ -122,6 +122,27 @@ plot(desire_sample_via$leg_via, col = "red", add = TRUE, lwd = 3)
 plot(desire_sample_via$leg_dest, col = "orange", add = TRUE, lwd = 3)
 ```
 
+The distribution of total trip distances and trip distances to and from stations is shown in Figure \@ref(fig:distances).
+
+```{r distances, fig.cap="Straight line distances of journey, origin-station segments, station-destination segments, and rail sections of journey."}
+desire_rail_via$dist_od = lwgeom::st_geod_length(desire_rail$geometry)
+desire_rail_via$dist_leg_orig = lwgeom::st_geod_length(desire_rail_via$leg_orig)
+desire_rail_via$dist_leg_via = lwgeom::st_geod_length(desire_rail_via$leg_via)
+desire_rail_via$dist_leg_dest = lwgeom::st_geod_length(desire_rail_via$leg_dest)
+desire_rail_clean = desire_rail_via %>% 
+  mutate(across(dist_od:dist_leg_dest, \(x) as.numeric(x / 1000)))
+distances_df = desire_rail_clean %>% 
+  sf::st_drop_geometry() %>% 
+  select(contains("dist")) %>% 
+  pivot_longer(cols = contains("dist"), names_to = "Journey leg", values_to = "Distance (km)")
+distances_df %>% 
+  ggplot() +
+  geom_histogram(aes(`Distance (km)`), binwidth = 1) +
+  facet_wrap(~`Journey leg`, nrow = 1) +
+  xlim(c(-3, 30))
+```
+
+
 
 
 # Transit routing
