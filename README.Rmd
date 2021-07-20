@@ -1,5 +1,5 @@
 ---
-output: github_document
+output: bookdown::github_document2
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   warning = FALSE
 )
 library(tidyverse)
+library(sf)
 
 param_region = "west-yorkshire"
 param_min_flow = 100
@@ -45,9 +46,6 @@ od_england_wales %>%
   knitr::kable()
 ```
 
-The case study region of West Yorkshire is used to subset the dataset of `r nrow(od_england_wales)` OD pairs.
-OD pairs converted to desire lines with more than `r param_min_flow_rail` people by any mode (black) and by rail (red) are shown below.
-
 ```{r}
 region = pct::pct_regions %>% 
   filter(region_name == param_region)
@@ -60,6 +58,14 @@ desire_filtered = od::od_to_sf(x = od_filtered, z = centroids_england_wales)
 desire_filtered$length_m = sf::st_length(desire_filtered) %>% as.numeric()
 desire_rail = desire_filtered %>% 
   filter(train >= param_min_flow_rail)
+```
+
+The case study region of West Yorkshire is used to subset the dataset of `r nrow(od_england_wales)` OD pairs to records representing trips originating in the region (`r nrow(od_region)` rows).
+In a further subsetting stage only OD pairs with more than a threshold number of trips were kept to focus the analysis on desire lines in which large numbers of people travel by train.
+Setting this threshold to `r param_min_flow_rail` people by results in `r nrow(desire_rail)` rows in the case study region.
+These rail trips are illustrated in Figure \@ref(fig:simpleraildesire) below.
+
+```{r simpleraildesire, fig.cap="Illustration of major commute desire lines originating in West Yorkshire by any mode (black) and by rail (blue)."}
 plot(region$geometry)
 plot(centroids_england_wales$geometry, add = TRUE)
 plot(centroids_region$geometry, pch = 2, add = TRUE)
@@ -68,6 +74,10 @@ plot(desire_rail$geometry, add = TRUE, col = "blue")
 ```
 
 # Rail station data
+
+Data on rail station locations was obtained from the [naptan.app.dft.gov.uk](http://naptan.app.dft.gov.uk) website.
+The multi-stage trips from home to work via rail stations is shown in Figure \@ref(fig:railsample) below.
+This graphic assumes simplistically that the first stage of rail journeys was to the nearest station, that the rail journey went to the station closes to their destination, and that trips involve travelling in a straight line (an assumption we will remove in the next section). 
 
 ```{r, eval=FALSE}
 u_naptan = "http://naptan.app.dft.gov.uk/DataRequest/Naptan.ashx?format=csv"
@@ -82,7 +92,7 @@ plot(region$geometry)
 sf::write_sf(rail_sf, "rail_stations.geojson")
 ```
 
-```{r railsample}
+```{r railsample, fig.show='hold', out.width="49%", fig.cap="Illustration of desire lines with high numbers of rail trips, focussing on a sample of 5, assuming straight line travel (left) and assuming trips travel via the nearest station to the origin and destination, showing desire lines from home locations to the nearest stations (right)." }
 # plot sample of trips to demo data on
 set.seed(7)
 desire_sample = desire_rail %>% 
@@ -95,10 +105,21 @@ desire_sample2 = desire_rail %>%
 
 desire_sample = rbind(desire_sample, desire_sample2)
 rail_stations = sf::read_sf("rail_stations.geojson")
-plot(desire_rail$geometry, col = "grey")
+# calculate straight line routes via stations
+desire_rail_via = stplanr::line_via(l = desire_rail, p = rail_stations)
+desire_sample_via = stplanr::line_via(l = desire_sample, p = rail_stations)
+# sf::st_crs(desire_sample_via$leg_dest) # see https://github.com/ropensci/stplanr/issues/465
+
+plot(region$geometry)
+plot(desire_rail$geometry, col = "grey", add = TRUE)
 plot(desire_sample$geometry, col = "blue", add = TRUE, lwd = 2)
-plot(region$geometry, add = TRUE)
 plot(rail_stations$geometry, add = TRUE)
+
+plot(region$geometry)
+plot(desire_rail_via$leg_orig, col = "grey", add = TRUE)
+plot(desire_sample_via$leg_orig, col = "green", add = TRUE, lwd = 3)
+plot(desire_sample_via$leg_via, col = "red", add = TRUE, lwd = 3)
+plot(desire_sample_via$leg_dest, col = "orange", add = TRUE, lwd = 3)
 ```
 
 
