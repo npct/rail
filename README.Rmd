@@ -131,10 +131,18 @@ desire_rail_via$dist_leg_via = lwgeom::st_geod_length(desire_rail_via$leg_via)
 desire_rail_via$dist_leg_dest = lwgeom::st_geod_length(desire_rail_via$leg_dest)
 desire_rail_clean = desire_rail_via %>% 
   mutate(across(dist_od:dist_leg_dest, \(x) as.numeric(x / 1000)))
+leg_labels = c("Origin", "Destination", "Via", "Journey")
 distances_df = desire_rail_clean %>% 
   sf::st_drop_geometry() %>% 
   select(contains("dist")) %>% 
-  pivot_longer(cols = contains("dist"), names_to = "Journey leg", values_to = "Distance (km)")
+  pivot_longer(cols = contains("dist"), names_to = "Journey leg", values_to = "Distance (km)") %>% 
+  mutate(`Journey leg` = gsub(pattern = "dist_|dist_leg_", replacement = "", `Journey leg`)) %>% 
+  mutate(`Journey leg` = str_to_title(`Journey leg`)) %>%
+  mutate(`Journey leg` = gsub(pattern = "Orig", replacement = "Origin", `Journey leg`)) %>% 
+  mutate(`Journey leg` = gsub(pattern = "Dest", replacement = "Destination", `Journey leg`)) %>% 
+  mutate(`Journey leg` = gsub(pattern = "Od", replacement = "Journey", `Journey leg`)) %>% 
+  mutate(`Journey leg` = factor(`Journey leg`, labels = leg_labels))
+summary(distances_df)
 distances_df %>% 
   ggplot() +
   geom_histogram(aes(`Distance (km)`), binwidth = 1) +
@@ -142,11 +150,11 @@ distances_df %>%
   xlim(c(-3, 30))
 ```
 
+# Public transport routing
 
+The route that people will take is not necessarily the one that goes to the closest rail station to their home.
+It will usually be the route that minimises total journey time.
 
-
-# Transit routing
-
-
+The total journey time can be calculated as the sum of the o
 
 # Discussion
