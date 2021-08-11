@@ -25,7 +25,7 @@ param_min_flow_rail = 10
 # Estimating cycling potential to rail stations
 
 <!-- badges: start -->
-[![.github/workflows/render-rmarkdown.yaml](https://github.com/npct/rail/actions/workflows/render-rmarkdown.yaml/badge.svg)](https://github.com/npct/rail/actions/workflows/render-rmarkdown.yaml)
+<!-- [![.github/workflows/render-rmarkdown.yaml](https://github.com/npct/rail/actions/workflows/render-rmarkdown.yaml/badge.svg)](https://github.com/npct/rail/actions/workflows/render-rmarkdown.yaml) -->
 <!-- badges: end -->
 
 The goal of this repo is to explore methods for calculating cycling potential to public transport nodes, rail stations in the first instance.
@@ -131,7 +131,7 @@ desire_rail_via$dist_leg_via = lwgeom::st_geod_length(desire_rail_via$leg_via)
 desire_rail_via$dist_leg_dest = lwgeom::st_geod_length(desire_rail_via$leg_dest)
 desire_rail_clean = desire_rail_via %>% 
   mutate(across(dist_od:dist_leg_dest, \(x) as.numeric(x / 1000)))
-leg_labels = c("Origin", "Destination", "Via", "Journey")
+leg_labels = c("Origin", "Via", "Destination", "Journey")
 distances_df = desire_rail_clean %>% 
   sf::st_drop_geometry() %>% 
   select(contains("dist")) %>% 
@@ -142,10 +142,11 @@ distances_df = desire_rail_clean %>%
   mutate(`Journey leg` = gsub(pattern = "Dest", replacement = "Destination", `Journey leg`)) %>% 
   mutate(`Journey leg` = gsub(pattern = "Od", replacement = "Journey", `Journey leg`)) %>% 
   mutate(`Journey leg` = factor(`Journey leg`, labels = leg_labels))
-summary(distances_df)
+# summary(distances_df$`Journey leg`)
 distances_df %>% 
   ggplot() +
   geom_histogram(aes(`Distance (km)`), binwidth = 1) +
+  # geom_density(aes(`Distance (km)`), stat = "count", bw = 100) + # too intricate
   facet_wrap(~`Journey leg`, nrow = 1) +
   xlim(c(-3, 30))
 ```
@@ -155,6 +156,64 @@ distances_df %>%
 The route that people will take is not necessarily the one that goes to the closest rail station to their home.
 It will usually be the route that minimises total journey time.
 
-The total journey time can be calculated as the sum of the o
+The total journey time can be calculated as the sum of the origin, public transport stage, and destination stages:
+
+$$
+T_j = T_o + T_p + T_d
+$$
+
+The time taken for each stage varies depending on the origin and destination station.
+In this example we will focus only on the choice of the origin station.
+We can find the three nearest stations to each origin as follows:
+
+```{r}
+origin = lwgeom::st_startpoint(desire_rail_clean$leg_orig)[1]
+destination = lwgeom::st_endpoint(desire_rail_clean$leg_dest)[1]
+```
+
+
+```{r, echo=TRUE}
+nearest_stations = nngeo::st_nn(origin, rail_stations, k = 3, progress = FALSE)
+nearest_stations
+```
+
+```{r}
+time_2021 = lubridate::ymd_hms("2021-08-11 07:30:00")
+# route_pt1 = stplanr::route_google(from = rail_stations$geometry[1], to = destination, mode = "transit")
+route_pt1 = stplanr::route_google(from = rail_stations$geometry[nearest_stations[[1]][1]], to = destination, mode = "transit", arrival_time = time_2021)
+route_pt2 = stplanr::route_google(from = rail_stations$geometry[nearest_stations[[1]][2]], to = destination, mode = "transit", arrival_time = time_2021)
+route_pt3 = stplanr::route_google(from = rail_stations$geometry[nearest_stations[[1]][3]], to = destination, mode = "transit", arrival_time = time_2021)
+```
+
+Based on this example, we can plot the three route options and show their associated times:
+
+```{r}
+plot(region$geometry)
+plot(origin, add = TRUE, cex = 2)
+plot(destination, add = TRUE, cex = 2)
+plot(rail_stations$geometry[nearest_stations[[1]]], col = "red", add = TRUE, pch = 2)
+plot(rail_stations$geometry, col = "red", add = TRUE)
+plot(route_pt1, add = T)
+plot(route_pt2, add = T)
+plot(route_pt3, add = T)
+```
+
+
+```{r}
+route_df = rbind(route_pt1, route_pt2, route_pt3) 
+route_df %>% 
+  select(matches("dist|dur")) %>% 
+  select(-matches("traffic")) %>% 
+  sf::st_drop_geometry() %>% 
+  knitr::kable()
+```
+
+# Cycle routing
+
+
+# Scaling the methods
+
+
+
 
 # Discussion

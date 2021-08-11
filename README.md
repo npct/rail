@@ -4,8 +4,7 @@
 # 1 Estimating cycling potential to rail stations
 
 <!-- badges: start -->
-
-[![.github/workflows/render-rmarkdown.yaml](https://github.com/npct/rail/actions/workflows/render-rmarkdown.yaml/badge.svg)](https://github.com/npct/rail/actions/workflows/render-rmarkdown.yaml)
+<!-- [![.github/workflows/render-rmarkdown.yaml](https://github.com/npct/rail/actions/workflows/render-rmarkdown.yaml/badge.svg)](https://github.com/npct/rail/actions/workflows/render-rmarkdown.yaml) -->
 <!-- badges: end -->
 
 The goal of this repo is to explore methods for calculating cycling
@@ -19,11 +18,11 @@ obtained from a range of sources. We will use open OD data from the 2011
 UK Census to demonstrate the methods. A random sample of OD pairs from
 the national dataset is shown below.
 
-| geo\_code1 | geo\_code2 | all | from\_home | light\_rail | train | bus | taxi | motorbike | car\_driver | car\_passenger | bicycle | foot | other | geo\_name1       | geo\_name2         | la\_1        | la\_2          |
-|:-----------|:-----------|----:|-----------:|------------:|------:|----:|-----:|----------:|------------:|---------------:|--------:|-----:|------:|:-----------------|:-------------------|:-------------|:---------------|
-| E02004474  | E02000916  |   2 |          0 |           0 |     0 |   0 |    0 |         0 |           2 |              0 |       0 |    0 |     0 | Castle Point 002 | Waltham Forest 022 | Castle Point | Waltham Forest |
-| E02000512  | E02003707  |   2 |          0 |           0 |     0 |   0 |    0 |         0 |           2 |              0 |       0 |    0 |     0 | Hillingdon 019   | Wycombe 012        | Hillingdon   | Wycombe        |
-| E02000371  | E02000735  |   1 |          0 |           0 |     0 |   0 |    0 |         0 |           0 |              0 |       1 |    0 |     0 | Hackney 027      | Newham 022         | Hackney      | Newham         |
+| geo_code1 | geo_code2 | all | from_home | light_rail | train | bus | taxi | motorbike | car_driver | car_passenger | bicycle | foot | other | geo_name1        | geo_name2          | la_1         | la_2           |
+|:----------|:----------|----:|----------:|-----------:|------:|----:|-----:|----------:|-----------:|--------------:|--------:|-----:|------:|:-----------------|:-------------------|:-------------|:---------------|
+| E02004474 | E02000916 |   2 |         0 |          0 |     0 |   0 |    0 |         0 |          2 |             0 |       0 |    0 |     0 | Castle Point 002 | Waltham Forest 022 | Castle Point | Waltham Forest |
+| E02000512 | E02003707 |   2 |         0 |          0 |     0 |   0 |    0 |         0 |          2 |             0 |       0 |    0 |     0 | Hillingdon 019   | Wycombe 012        | Hillingdon   | Wycombe        |
+| E02000371 | E02000735 |   1 |         0 |          0 |     0 |   0 |    0 |         0 |          0 |             0 |       1 |    0 |     0 | Hackney 027      | Newham 022         | Hackney      | Newham         |
 
 The case study region of West Yorkshire is used to subset the dataset of
 2402201 OD pairs to records representing trips originating in the region
@@ -71,16 +70,46 @@ stations (right).
 The distribution of total trip distances and trip distances to and from
 stations is shown in Figure <a href="#fig:distances">3.2</a>.
 
-<div class="figure">
+![Figure 3.2: Straight line distances of journey, origin-station
+segments, station-destination segments, and rail sections of
+journey.](README_files/figure-gfm/distances-1.png)
 
-<img src="README_files/figure-gfm/distances-1.png" alt="Straight line distances of journey, origin-station segments, station-destination segments, and rail sections of journey."  />
-<p class="caption">
-Figure 3.2: Straight line distances of journey, origin-station segments,
-station-destination segments, and rail sections of journey.
-</p>
+# 4 Public transport routing
 
-</div>
+The route that people will take is not necessarily the one that goes to
+the closest rail station to their home. It will usually be the route
+that minimises total journey time.
 
-# 4 Transit routing
+The total journey time can be calculated as the sum of the origin,
+public transport stage, and destination stages:
 
-# 5 Discussion
+*T*<sub>*j*</sub> = *T*<sub>*o*</sub> + *T*<sub>*p*</sub> + *T*<sub>*d*</sub>
+
+The time taken for each stage varies depending on the origin and
+destination station. In this example we will focus only on the choice of
+the origin station. We can find the three nearest stations to each
+origin as follows:
+
+``` r
+nearest_stations = nngeo::st_nn(origin, rail_stations, k = 3, progress = FALSE)
+nearest_stations
+#> [[1]]
+#> [1] 1256 1266 1198
+```
+
+Based on this example, we can plot the three route options and show
+their associated times:
+
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+|      | distance_m | distance_text | duration_s | duration_text |
+|:-----|-----------:|:--------------|-----------:|:--------------|
+| 1-1  |      23684 | 23.7 km       |       2758 | 46 mins       |
+| 1-11 |      21881 | 21.9 km       |       2406 | 40 mins       |
+| 1-12 |      19656 | 19.7 km       |       2296 | 38 mins       |
+
+# 5 Cycle routing
+
+# 6 Scaling the methods
+
+# 7 Discussion
